@@ -11,10 +11,10 @@ Data is processed in a live mode, the script captures packets going through the 
 ## Supported protocols
 
 Currently, the application supports the `HTTP` (`HTTP/1.1`) only.
-Application runs for a protocol, set in the `.env` settings. 
+Application runs with the protocol that set in the `.env` settings. 
 The application can be extended with other protocols support:
-- implement the protocol parser in the `service/parser/`;
-- set needed protocol in the `.env` config for an appropriate environment.
+- implement the protocol parser in the `internal/parser/`;
+- set the needed protocol in the `.env` config for an appropriate environment.
 
 ## Input options
 
@@ -32,7 +32,7 @@ Either `file` or `net` options should be passed.
 
 The `.pcap` file can be generated using `tcpdump` util:
 ```bash
-sudo tcpdump port 80  -w www/ebpf/pparse/test.pcap
+sudo tcpdump port 80  -w www/ebpf/pcap-parser/test.pcap
 ```
 
 Execute a few requests to sites that support the `HTTP/1.1`, as an example:
@@ -92,4 +92,3 @@ time="2024-07-05T17:02:39+03:00" level=info msg=Stats at="2024-07-05 17:02:39" a
 time="2024-07-05T17:02:49+03:00" level=info msg=Stats at="2024-07-05 17:02:49" avgResponseTimeMs=95 hasData=true requestPerUrl="[{\"url\":\"shop.paridon.com\",\"count\":6}]"
 time="2024-07-05T17:02:59+03:00" level=info msg=Stats at="2024-07-05 17:02:59" avgResponseTimeMs=62 hasData=true requestPerUrl="[{\"url\":\"shop.paridon.com\",\"count\":3},{\"url\":\"captive.apple.com\",\"count\":8}]"
 ```
-
