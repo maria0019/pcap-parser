@@ -18,7 +18,7 @@ func Test_Parser_File(t *testing.T) {
 		NetInterface:    "",
 		Protocol:        "HTTP",
 	}
-	dataSource := sourceMock.NewSourceMock(conf.FilePath)
+	dataSource := sourceMock.NewSourceMockHttpPacket(conf.FilePath)
 	calc := NewCalculator()
 	counter := file.NewCounter(calc, conf.MetricsInterval)
 

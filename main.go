@@ -1,7 +1,7 @@
 package main
 
 import (
-	log "github.com/sirupsen/logrus"
+	log "github.com/gookit/slog"
 	"pparse/config"
 	"pparse/internal/parser"
 	"pparse/logger"
@@ -11,26 +11,28 @@ func main() {
 	logger.Init()
 	log.Info("Parser app started")
 
-	var count int
-	defer func() {
-		log.WithField("packets", count).Info("Done") // TODO make it work for network, add graceful shutdown
-	}()
-
 	conf, err := config.Init()
 	if err != nil {
-		log.WithError(err).Fatal("Config error")
+		log.WithData(log.M{"error": err.Error()}).Error("Config init error")
+	}
+	if err := conf.Validate(); err != nil {
+		log.WithData(log.M{"error": err.Error()}).Error("Config validation error")
 	}
 
-	log.WithFields(log.Fields{
+	log.WithData(log.M{
 		"protocol":        conf.Protocol,
 		"filePath":        conf.FilePath,
 		"netInterface":    conf.NetInterface,
 		"metricsInterval": conf.MetricsInterval,
 	}).Info("Run parser")
 
-	app := parser.New(conf)
-	count, err = app.Run()
+	app, err := parser.New(conf)
 	if err != nil {
-		log.WithError(err).Fatal("Parser failed")
+		log.WithData(log.M{"error": err.Error()}).Error("App init failed")
+	}
+
+	_, err = app.Run()
+	if err != nil {
+		log.WithData(log.M{"error": err.Error()}).Error("App run failed")
 	}
 }

@@ -7,7 +7,7 @@ import (
 
 type CalculatorI interface {
 	ExtractPacketValues(p packet.ParsedPacketI)
-	StatsAsMap(at time.Time) map[string]interface{}
-	Stats(at time.Time) interface{}
+	StatsAsMap(at time.Time) map[string]any
+	Stats(at time.Time) any
 	Cleanup()
 }

@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+const minTickerDuration = 1
+
 type Counter struct {
 	calculator calculator.CalculatorI
 	interval   time.Duration
@@ -14,6 +16,10 @@ type Counter struct {
 }
 
 func NewCounter(calculator calculator.CalculatorI, timeGap int) Counter {
+	if timeGap < 1 {
+		timeGap = minTickerDuration
+	}
+
 	return Counter{
 		calculator: calculator,
 		ticker:     time.NewTicker(time.Second * time.Duration(timeGap)),

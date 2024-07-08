@@ -1,6 +1,7 @@
 package source
 
 import (
+	"fmt"
 	"pparse/internal/calculator"
 	"pparse/internal/packet"
 	"pparse/internal/source/file"
@@ -12,19 +13,17 @@ type CounterI interface {
 	ProcessPacket(parsed packet.ParsedPacketI)
 }
 
-func NewCounter(filePath, netInterface string, c calculator.CalculatorI, timeGap int) CounterI {
-	var counter CounterI
-
+func NewCounter(filePath, netInterface string, c calculator.CalculatorI, timeInterval int) (CounterI, error) {
 	switch {
 	case filePath != "":
-		c := file.NewCounter(c, timeGap)
+		c := file.NewCounter(c, timeInterval)
 
-		return &c
+		return &c, nil
 	case netInterface != "":
-		c := network.NewCounter(c, timeGap)
+		c := network.NewCounter(c, timeInterval)
 
-		return &c
+		return &c, nil
+	default:
+		return nil, fmt.Errorf("counter is not found for data source")
 	}
-
-	return counter
 }

@@ -1,8 +1,9 @@
-package mock
+package gopacket_mock
 
 import (
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
+	"pparse/mock"
 	"time"
 )
 
@@ -82,7 +83,7 @@ func (m PacketHTTPRespMock) Data() []byte {
 }
 
 func (m PacketHTTPRespMock) Metadata() *gopacket.PacketMetadata {
-	t, _ := time.Parse(time.DateTime, "2020-01-01 00:00:00")
+	t, _ := time.Parse(time.DateTime, mock.TimeNow)
 
 	return &gopacket.PacketMetadata{
 		CaptureInfo: gopacket.CaptureInfo{Timestamp: t},

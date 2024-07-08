@@ -2,7 +2,6 @@ package httppack
 
 import (
 	"encoding/json"
-	"pparse/internal/calculator"
 	"pparse/internal/packet"
 	"strings"
 	"time"
@@ -25,13 +24,11 @@ type RequestsPerUrl struct {
 	Count int    `json:"count"`
 }
 
-func NewCalculator() calculator.CalculatorI {
-	c := Calculator{
+func NewCalculator() *Calculator {
+	return &Calculator{
 		RequestsPerUrl: map[string]int{},
 		ResponseTimes:  map[int][]time.Time{},
 	}
-
-	return &c
 }
 
 func (c *Calculator) ExtractPacketValues(p packet.ParsedPacketI) {
@@ -42,7 +39,7 @@ func (c *Calculator) ExtractPacketValues(p packet.ParsedPacketI) {
 
 }
 
-func (c *Calculator) Stats(at time.Time) interface{} {
+func (c *Calculator) Stats(at time.Time) any {
 	return Stats{
 		At:                at.Format(time.DateTime),
 		AvgResponseTimeMs: c.calculateAverageResponseTime(),
@@ -51,11 +48,11 @@ func (c *Calculator) Stats(at time.Time) interface{} {
 	}
 }
 
-func (c *Calculator) StatsAsMap(at time.Time) map[string]interface{} {
+func (c *Calculator) StatsAsMap(at time.Time) map[string]any {
 	stats := c.Stats(at).(Stats)
 	b, _ := json.Marshal(stats.RequestPerUrl)
 
-	return map[string]interface{}{
+	return map[string]any{
 		"at":                stats.At,
 		"avgResponseTimeMs": stats.AvgResponseTimeMs,
 		"requestPerUrl":     string(b),

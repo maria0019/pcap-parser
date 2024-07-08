@@ -1,9 +1,9 @@
 package sender
 
 import (
-	log "github.com/sirupsen/logrus"
+	log "github.com/gookit/slog"
 )
 
-func ToStdout(title string, params map[string]interface{}) {
-	log.WithFields(params).Info(title)
+func ToStdout(title string, params map[string]any) {
+	log.WithData(params).Info(title)
 }

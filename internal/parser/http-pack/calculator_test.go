@@ -2,12 +2,13 @@ package httppack
 
 import (
 	"github.com/stretchr/testify/assert"
+	"pparse/mock"
 	"testing"
 	"time"
 )
 
 func Test_Calculator(t *testing.T) {
-	now, _ := time.Parse(time.DateTime, "2020-01-01 00:00:00")
+	now, _ := time.Parse(time.DateTime, mock.TimeNow)
 	var tests = []struct {
 		title    string
 		at       time.Time
@@ -25,7 +26,7 @@ func Test_Calculator(t *testing.T) {
 				{URL: "abc.com", Uid: 102, At: now.Add(18 * time.Millisecond)}, // 8 Millisecond resp time
 			},
 			Stats{
-				At:                "2020-01-01 00:00:05",
+				At:                mock.TimeNowAdd5Sec,
 				AvgResponseTimeMs: 6,
 				RequestPerUrl:     []RequestsPerUrl{{Url: "any.com", Count: 4}, {Url: "abc.com", Count: 2}},
 				HasData:           true,
@@ -34,7 +35,7 @@ func Test_Calculator(t *testing.T) {
 			now.Add(time.Duration(10) * time.Second),
 			[]ParsedPacket{},
 			Stats{
-				At:                "2020-01-01 00:00:10",
+				At:                mock.TimeNowAdd10Sec,
 				AvgResponseTimeMs: 0,
 				RequestPerUrl:     []RequestsPerUrl{},
 				HasData:           false,
@@ -43,7 +44,7 @@ func Test_Calculator(t *testing.T) {
 			now.Add(time.Duration(15) * time.Second),
 			[]ParsedPacket{},
 			Stats{
-				At:                "2020-01-01 00:00:15",
+				At:                mock.TimeNowAdd15Sec,
 				AvgResponseTimeMs: 0,
 				RequestPerUrl:     []RequestsPerUrl{},
 				HasData:           false,
@@ -55,7 +56,7 @@ func Test_Calculator(t *testing.T) {
 				{URL: "any.com", Uid: 100, At: now.Add(4 * time.Millisecond)}, // 2 Millisecond resp time
 			},
 			Stats{
-				At:                "2020-01-01 00:00:20",
+				At:                mock.TimeNowAdd20Sec,
 				AvgResponseTimeMs: 2,
 				RequestPerUrl:     []RequestsPerUrl{{Url: "any.com", Count: 2}},
 				HasData:           true,
@@ -69,19 +70,25 @@ func Test_Calculator(t *testing.T) {
 				c.ExtractPacketValues(pack)
 			}
 
-			actual := c.Stats(test.at).(Stats)
-			assert.Equal(t, test.expected.At, actual.At)
-			assert.Equal(t, test.expected.HasData, actual.HasData)
-			assert.Equal(t, test.expected.AvgResponseTimeMs, actual.AvgResponseTimeMs)
-			assert.Equal(t, len(test.expected.RequestPerUrl), len(actual.RequestPerUrl))
+			actualStats := c.Stats(test.at).(Stats)
+			assert.Equal(t, test.expected.At, actualStats.At)
+			assert.Equal(t, test.expected.HasData, actualStats.HasData)
+			assert.Equal(t, test.expected.AvgResponseTimeMs, actualStats.AvgResponseTimeMs)
+			assert.Equal(t, len(test.expected.RequestPerUrl), len(actualStats.RequestPerUrl))
 
 			for _, e := range test.expected.RequestPerUrl {
-				for _, a := range actual.RequestPerUrl {
+				for _, a := range actualStats.RequestPerUrl {
 					if e.Url == a.Url {
 						assert.Equal(t, e.Count, a.Count)
 					}
 				}
 			}
+
+			actualStatsAsMap := c.StatsAsMap(test.at)
+			assert.Equal(t, test.expected.At, actualStatsAsMap["at"])
+			assert.Equal(t, test.expected.HasData, actualStatsAsMap["hasData"])
+			assert.Equal(t, test.expected.AvgResponseTimeMs, actualStatsAsMap["avgResponseTimeMs"])
+			assert.NotEmpty(t, actualStatsAsMap["requestPerUrl"])
 
 			c.Cleanup()
 		})

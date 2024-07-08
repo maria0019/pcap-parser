@@ -2,12 +2,13 @@ package httppack
 
 import (
 	"github.com/stretchr/testify/assert"
+	"pparse/mock"
 	"testing"
 	"time"
 )
 
 func Test_Packet(t *testing.T) {
-	now, _ := time.Parse(time.DateTime, "2020-01-01 00:00:00")
+	now, _ := time.Parse(time.DateTime, mock.TimeNow)
 	var tests = []struct {
 		title           string
 		packet          ParsedPacket

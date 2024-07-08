@@ -67,28 +67,29 @@ sudo go run main.go -net wlp0s20f3 -interval 10
 ```
 
 ## The output
-All statistics are passed to the Stdout in format compatible with logs parsers.
+All statistics are passed to the Stdout.
 
 File:
 ```bash
 go run main.go -file test.pcap -interval 10
 
-time="2024-07-05T16:22:20+03:00" level=info msg="Parser app started"
-time="2024-07-05T16:22:20+03:00" level=info msg="Run parser" filePath=test.pcap metricsInterval=10 netInterface= protocol=HTTP
-time="2024-07-05T16:22:20+03:00" level=info msg=Stats at="2024-07-05 12:15:45" avgResponseTimeMs=65 hasData=true requestPerUrl="[{\"url\":\"captive.apple.com\",\"count\":11},{\"url\":\"shop.paridon.com\",\"count\":18}]"
-time="2024-07-05T16:22:20+03:00" level=info msg=Stats at="2024-07-05 12:15:55" avgResponseTimeMs=74 hasData=true requestPerUrl="[{\"url\":\"shop.paridon.com\",\"count\":6},{\"url\":\"captive.apple.com\",\"count\":6}]"
-time="2024-07-05T16:22:20+03:00" level=info msg=Stats at="2024-07-05 12:16:05" avgResponseTimeMs=0 hasData=false requestPerUrl="[]"
-time="2024-07-05T16:22:20+03:00" level=info msg=Stats at="2024-07-05 12:16:15" avgResponseTimeMs=0 hasData=false requestPerUrl="[]"
+2024/07/08T19:58:45.004 channel=application level=INFO [file=main.go:12,main] message=Parser app started data=
+2024/07/08T19:58:45.004 channel=application level=INFO [file=main.go:27,main] message=Run parser data={filePath:test.pcap, netInterface:, metricsInterval:10, protocol:HTTP}
+2024/07/08T19:58:45.004 channel=application level=INFO [file=log.go:8,ToStdout] message=Stats data={at:2024-07-05 12:15:45, avgResponseTimeMs:65, requestPerUrl:[{"url":"captive.apple.com","count":11},{"url":"shop.paridon.com","count":18}], hasData:true}
+2024/07/08T19:58:45.005 channel=application level=INFO [file=log.go:8,ToStdout] message=Stats data={at:2024-07-05 12:15:55, avgResponseTimeMs:74, requestPerUrl:[{"url":"captive.apple.com","count":6},{"url":"shop.paridon.com","count":6}], hasData:true}
+2024/07/08T19:58:45.005 channel=application level=INFO [file=log.go:8,ToStdout] message=Stats data={at:2024-07-05 12:16:05, avgResponseTimeMs:0, requestPerUrl:[], hasData:false}
+2024/07/08T19:58:45.005 channel=application level=INFO [file=log.go:8,ToStdout] message=Stats data={at:2024-07-05 12:16:15, avgResponseTimeMs:0, requestPerUrl:[], hasData:false}
+
 ```
+
 Network interface:
 ```bash
 sudo go run main.go -net wlp0s20f3 -interval 10
 
-time="2024-07-05T17:02:09+03:00" level=info msg="Parser app started"
-time="2024-07-05T17:02:09+03:00" level=info msg="Run parser" filePath= metricsInterval=10 netInterface=wlp0s20f3 protocol=HTTP
-time="2024-07-05T17:02:19+03:00" level=info msg=Stats at="2024-07-05 17:02:19" avgResponseTimeMs=65 hasData=true requestPerUrl="[{\"url\":\"shop.paridon.com\",\"count\":4},{\"url\":\"captive.apple.com\",\"count\":9}]"
-time="2024-07-05T17:02:29+03:00" level=info msg=Stats at="2024-07-05 17:02:29" avgResponseTimeMs=84 hasData=true requestPerUrl="[{\"url\":\"shop.paridon.com\",\"count\":1}]"
-time="2024-07-05T17:02:39+03:00" level=info msg=Stats at="2024-07-05 17:02:39" avgResponseTimeMs=93 hasData=true requestPerUrl="[{\"url\":\"shop.paridon.com\",\"count\":12}]"
-time="2024-07-05T17:02:49+03:00" level=info msg=Stats at="2024-07-05 17:02:49" avgResponseTimeMs=95 hasData=true requestPerUrl="[{\"url\":\"shop.paridon.com\",\"count\":6}]"
-time="2024-07-05T17:02:59+03:00" level=info msg=Stats at="2024-07-05 17:02:59" avgResponseTimeMs=62 hasData=true requestPerUrl="[{\"url\":\"shop.paridon.com\",\"count\":3},{\"url\":\"captive.apple.com\",\"count\":8}]"
+2024/07/08T19:59:10.467 channel=application level=INFO [file=main.go:12,main] message=Parser app started data=
+2024/07/08T19:59:10.467 channel=application level=INFO [file=main.go:27,main] message=Run parser data={protocol:HTTP, filePath:, netInterface:wlp0s20f3, metricsInterval:10}
+2024/07/08T19:59:20.474 channel=application level=INFO [file=log.go:8,ToStdout] message=Stats data={at:2024-07-08 19:59:20, avgResponseTimeMs:82, requestPerUrl:[{"url":"shop.paridon.com","count":12},{"url":"captive.apple.com","count":12}], hasData:true}
+2024/07/08T19:59:30.476 channel=application level=INFO [file=log.go:8,ToStdout] message=Stats data={at:2024-07-08 19:59:30, avgResponseTimeMs:66, requestPerUrl:[{"url":"captive.apple.com","count":7},{"url":"shop.paridon.com","count":5}], hasData:true}
+2024/07/08T19:59:40.476 channel=application level=INFO [file=log.go:8,ToStdout] message=Stats data={at:2024-07-08 19:59:40, avgResponseTimeMs:80, requestPerUrl:[{"url":"shop.paridon.com","count":1}], hasData:true}
+
 ```

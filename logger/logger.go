@@ -1,14 +1,10 @@
 package logger
 
-import (
-	log "github.com/sirupsen/logrus"
-	"os"
-)
+import "github.com/gookit/slog"
 
 func Init() {
-	log.SetFormatter(&log.TextFormatter{
-		DisableColors: true,
-		FullTimestamp: true,
+	slog.Configure(func(logger *slog.SugaredLogger) {
+		f := logger.Formatter.(*slog.TextFormatter)
+		f.SetTemplate(slog.NamedTemplate)
 	})
-	log.SetOutput(os.Stdout)
 }

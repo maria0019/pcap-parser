@@ -3,12 +3,14 @@ package config
 import (
 	"errors"
 	"flag"
+	"fmt"
 	"github.com/joho/godotenv"
 	"os"
 )
 
 const (
 	DefaultMetricsInterval = 60
+	FileExtension          = ".pcap"
 )
 
 type ParserConfig struct {
@@ -18,37 +20,40 @@ type ParserConfig struct {
 	Protocol        string
 }
 
-func (c ParserConfig) Validate() error {
-	if c.FilePath == "" && c.NetInterface == "" {
-		return errors.New("file path or network interface is required")
-	}
-
-	return nil
-}
-
 func Init() (ParserConfig, error) {
 	filePath := flag.String("file", "", "File name to parse")
 	netInterface := flag.String("net", "", "Network interface name to receive packets")
 	metricsInterval := flag.Int("interval", DefaultMetricsInterval, "Events aggregation interval in seconds")
 	flag.Parse()
 
-	if *filePath == "" && *netInterface == "" {
-		return ParserConfig{}, errors.New("file path or network interface is required")
+	conf := ParserConfig{
+		MetricsInterval: *metricsInterval,
+		FilePath:        *filePath,
+		NetInterface:    *netInterface,
+		Protocol:        "HTTP",
 	}
 
 	if err := godotenv.Load(); err != nil {
 		return ParserConfig{}, errors.New("error loading .env file")
 	}
 
-	protocol, ok := os.LookupEnv("PROTOCOL")
-	if !ok {
-		return ParserConfig{}, errors.New("cannot get PROTOCOL setting from .env")
+	conf.Protocol, _ = os.LookupEnv("PROTOCOL")
+
+	return conf, nil
+}
+
+func (conf ParserConfig) Validate() error {
+	if conf.FilePath == "" && conf.NetInterface == "" {
+		return errors.New("file path or network interface is required")
 	}
 
-	return ParserConfig{
-		MetricsInterval: *metricsInterval,
-		FilePath:        *filePath,
-		NetInterface:    *netInterface,
-		Protocol:        protocol,
-	}, nil
+	if conf.FilePath != "" && conf.FilePath[len(conf.FilePath)-5:] != FileExtension {
+		return fmt.Errorf("file should have %s extension", FileExtension)
+	}
+
+	if conf.Protocol == "" {
+		return errors.New("cannot get PROTOCOL setting from .env")
+	}
+
+	return nil
 }

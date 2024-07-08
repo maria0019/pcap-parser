@@ -35,6 +35,7 @@ func (c *Counter) ProcessPacket(parsed packet.ParsedPacketI) {
 	if parsed.Timestamp().Equal(c.timeBorder) || parsed.Timestamp().After(c.timeBorder) {
 		// print statistics when the time border is reached
 		sender.ToStdout("Stats", c.calculator.StatsAsMap(c.timeBorder))
+		//sender.ToStdoutObj("Stats", c.calculator.Stats(c.timeBorder))
 
 		c.calculator.Cleanup()                      // reset stats calculator when the time border is reached
 		c.timeBorder = c.timeBorder.Add(c.interval) // set next time step

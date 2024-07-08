@@ -2,7 +2,7 @@ package mock
 
 import (
 	"github.com/google/gopacket"
-	"pparse/internal/packet/mock"
+	gopacketMock "pparse/mock/gopacket-mock"
 )
 
 const TypeFile = "file"
@@ -11,7 +11,7 @@ type SourceMock struct {
 	SrcPath string // path to file
 }
 
-func NewSourceMock(path string) SourceMock {
+func NewSourceMockHttpPacket(path string) SourceMock {
 	return SourceMock{SrcPath: path}
 }
 
@@ -26,10 +26,10 @@ func (s SourceMock) Type() string {
 func (s SourceMock) Packets() (chan gopacket.Packet, error) {
 	c := make(chan gopacket.Packet, 2)
 
-	pack1 := mock.PacketHTTPReqMock{}
+	pack1 := gopacketMock.PacketHTTPReqMock{}
 	c <- pack1
 
-	pack2 := mock.PacketHTTPRespMock{}
+	pack2 := gopacketMock.PacketHTTPRespMock{}
 	c <- pack2
 
 	close(c)

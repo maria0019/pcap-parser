@@ -6,7 +6,7 @@ import (
 	"encoding/binary"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
-	log "github.com/sirupsen/logrus"
+	log "github.com/gookit/slog"
 	"net/http"
 	"pparse/config"
 	"pparse/internal/calculator"
@@ -35,7 +35,7 @@ func (p Parser) Run() (int, error) {
 	for item := range packets {
 		parsed, err := extractPacketData(item)
 		if err != nil {
-			log.WithError(err).Warn("Extract parser data error")
+			log.WithData(log.M{"error": err.Error()}).Error("Extract parser data error")
 		}
 		if parsed.IsValid() {
 			p.Counter.ProcessPacket(parsed)
